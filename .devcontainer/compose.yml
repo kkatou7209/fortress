@@ -1,0 +1,12 @@
+name: fortress
+
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: fortress-app
+    volumes:
+      - ../app:/workspace
+    tty: true
+
