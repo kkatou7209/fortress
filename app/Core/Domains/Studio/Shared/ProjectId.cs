@@ -1,11 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Core.Domains.Project.Shared;
+namespace Core.Domains.Studio.Shared;
 
 /// <summary>
 /// ID of a project
 /// </summary>
-internal readonly record struct ProjectId
+public readonly record struct ProjectId
 {
     public string Value { get; }
 

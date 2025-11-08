@@ -1,20 +1,20 @@
 using System;
 
-namespace Core.Domains.Project.Shared;
+namespace Core.Domains.Studio.Shared;
 
 /// <summary>
-/// ID of a project member.
+/// Id of workspace.
 /// </summary>
-public readonly record struct MemberId
+public readonly record struct WorkspaceId
 {
     public string Value { get; }
 
-    private MemberId(string value)
+    private WorkspaceId(string value)
     {
         this.Value = value;
     }
 
-    public static MemberId Of(string value)
+    public static WorkspaceId Of(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Empty string cannot be set");

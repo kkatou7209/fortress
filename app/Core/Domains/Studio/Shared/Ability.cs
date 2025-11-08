@@ -1,9 +1,9 @@
-namespace Core.Domains.Project.Shared;
+namespace Core.Domains.Studio.Shared;
 
 /// <summary>
 /// Abilities of a member.
 /// </summary>
-internal enum Ability
+public enum Ability
 {
     /// <summary>
     /// The member can create new projects.
@@ -13,4 +13,8 @@ internal enum Ability
     /// The member can create new teams.
     /// </summary>
     TeamCreation,
+    /// <summary>
+    /// The member can create new workspaces.
+    /// </summary>
+    WorkspaceCreation,
 }

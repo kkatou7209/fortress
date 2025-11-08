@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Domains/Identity/" />
     <Folder Include="Domains/Documentation/" />
-    <Folder Include="Domains/Project/Services/" />
   </ItemGroup>
 
 </Project>

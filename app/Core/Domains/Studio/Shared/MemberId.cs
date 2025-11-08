@@ -1,18 +1,20 @@
-namespace Core.Domains.Project.Shared;
+using System;
+
+namespace Core.Domains.Studio.Shared;
 
 /// <summary>
-/// Id of a project team.
+/// ID of a project member.
 /// </summary>
-internal readonly record struct TeamId
+public readonly record struct MemberId
 {
     public string Value { get; }
 
-    private TeamId(string value)
+    private MemberId(string value)
     {
         this.Value = value;
     }
 
-    public static TeamId Of(string value)
+    public static MemberId Of(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Empty string cannot be set");
