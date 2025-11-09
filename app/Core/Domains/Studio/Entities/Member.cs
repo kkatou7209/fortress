@@ -7,7 +7,7 @@ namespace Core.Domains.Studio.Entities;
 /// Project team member.
 /// </summary>
 public sealed class Member(
-    MemberId id,
+    MemberId              id,
     IEnumerable<Ability>? abilities = null
 )
 {

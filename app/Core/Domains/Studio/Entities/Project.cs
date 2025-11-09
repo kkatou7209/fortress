@@ -10,10 +10,11 @@ namespace Core.Domains.Studio.Entities;
 /// </para>
 /// </summary>
 public sealed class Project(
-    ProjectId id,
-    ProjectName name,
-    IEnumerable<Team>? teams = null,
-    IEnumerable<Project>? subProjects = null
+    ProjectId                id,
+    ProjectName              name,
+    IEnumerable<MemberId>?   members = null,
+    IEnumerable<TicketId>?   tickets = null,
+    IEnumerable<ProjectTag>? tags = null
 )
 {
     /// <summary>
@@ -27,18 +28,25 @@ public sealed class Project(
     public ProjectName Name { get; private set; } = name;
 
     /// <summary>
-    /// Teams assigned to this project.
+    /// Members who assigned the project.
     /// </summary>
-    public IEnumerable<Team> Teams => [.. this.teams];
+    public IEnumerable<MemberId> Members => [.. this.members];
 
     /// <summary>
-    /// Sub projects of this project.
+    /// Tasks of the project.
     /// </summary>
-    public IEnumerable<Project> SubProjects => [.. this.subProjects];
+    public IEnumerable<TicketId> Tickets => [.. this.tickets];
 
-    private ImmutableHashSet<Team> teams = (ImmutableHashSet<Team>) (teams ?? ImmutableHashSet<Team>.Empty);
+    /// <summary>
+    /// Tags of the project.
+    /// </summary>
+    public IEnumerable<ProjectTag> Tags => [.. this.tags];
 
-    private ImmutableHashSet<Project> subProjects = (ImmutableHashSet<Project>) (subProjects ?? ImmutableHashSet<Project>.Empty);
+    private ImmutableHashSet<MemberId> members = (ImmutableHashSet<MemberId>)(members ?? []);
+
+    private ImmutableHashSet<TicketId> tickets = (ImmutableHashSet<TicketId>)(tickets ?? []);
+
+    private ImmutableHashSet<ProjectTag> tags = (ImmutableHashSet<ProjectTag>) (tags ?? []);
 
     /// <summary>
     /// Rename project.
@@ -51,39 +59,45 @@ public sealed class Project(
     }
 
     /// <summary>
-    /// Add new teams to this project.
+    /// Asign members to the project.
     /// </summary>
-    public Project Assign(params Team[] teams)
+    public Project Assign(params MemberId[] members)
     {
-        this.teams = this.teams.Union(teams);
+        this.members = this.members.Union(members);
+
+        return this;
+    }
+
+    public Project Unassign(MemberId member)
+    {
+        this.members = this.members.Remove(member);
+
+        return this;
+    }
+
+    public bool IsAssigned(MemberId member)
+    {
+        return this.members.Contains(member);
+    }
+
+    /// <summary>
+    /// Add task to the project.
+    /// </summary>
+    public Project Issue(params TicketId[] tickets)
+    {
+        this.tickets = this.tickets.Union(tickets);
 
         return this;
     }
 
     /// <summary>
-    /// Add sub project to this project.
+    /// Tag project.
     /// </summary>
-    public Project Add(params Project[] subProjects)
+    public Project Tag(params ProjectTag[] tags)
     {
-        if (subProjects.Contains(this))
-            throw StudioDoaminViolationException.CircularProject;
-
-        this.subProjects = this.subProjects.Union(subProjects);
+        this.tags = this.tags.Union(tags);
 
         return this;
-    }
-
-    /// <summary>
-    /// Check if a team is assiged to the project
-    /// </summary>
-    public bool IsAsigned(Team team)
-    {
-        return this.Teams.Contains(team);
-    }
-
-    public bool Equals(Project other)
-    {
-        return other is not null && other.Id.Equals(this.Id);
     }
 
     public override bool Equals(object? obj)

@@ -14,11 +14,10 @@ The application consists of three main services.
 
 ### Project Management
 
-The **Project Management** donmain consists from:
+The **Project Management** donmain consists from these aggrigates:
 
-- Workspace : Project group
+- Workspace (Project group)
 - Project
-- Team
+- Member
 
 In the project management domain, project exists by itself or belongs to a workspace.
-

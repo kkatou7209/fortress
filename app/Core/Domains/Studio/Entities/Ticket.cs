@@ -6,10 +6,10 @@ namespace Core.Domains.Studio.Entities;
 /// Project task.
 /// </summary>
 public sealed class Ticket(
-    TicketId id,
-    TicketTitle title,
-    Member? asignee = null,
-    DateTime? deadline = null,
+    TicketId       id,
+    TicketTitle    title,
+    MemberId?      assignee = null,
+    DateTime?      deadline = null,
     TicketPriority priority = TicketPriority.None
 )
 {
@@ -31,7 +31,7 @@ public sealed class Ticket(
     /// <summary>
     /// Task assigned person.
     /// </summary>
-    public Member? Asignee { get; private set; } = asignee;
+    public MemberId? Assignee { get; private set; } = assignee;
 
     /// <summary>
     /// Deadline of the task.
@@ -51,9 +51,9 @@ public sealed class Ticket(
     /// <summary>
     /// Assign the task to member.
     /// </summary>
-    public Ticket Assign(Member member)
+    public Ticket Assign(MemberId member)
     {
-        this.Asignee = member;
+        this.Assignee = member;
 
         return this;
     }
@@ -63,7 +63,7 @@ public sealed class Ticket(
     /// </summary>
     public Ticket Unassign()
     {
-        this.Asignee = null;
+        this.Assignee = null;
 
         return this;
     }
