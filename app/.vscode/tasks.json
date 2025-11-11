@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Core Test",
+            "type": "shell",
+            "command": "dotnet test --logger \"console;verbosity=detailed\"",
+            "group": "test"
+        }
+    ]
+}

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Domains/Identity/" />
-    <Folder Include="Domains/Documentation/" />
+    <Folder Include="Domains/Roster/" />
+    <Folder Include="Domains/Archive/" />
   </ItemGroup>
 
 </Project>

@@ -42,11 +42,11 @@ public sealed class Project(
     /// </summary>
     public IEnumerable<ProjectTag> Tags => [.. this.tags];
 
-    private ImmutableHashSet<MemberId> members = (ImmutableHashSet<MemberId>)(members ?? []);
+    private ImmutableHashSet<MemberId> members = members?.ToImmutableHashSet() ?? [];
 
-    private ImmutableHashSet<TicketId> tickets = (ImmutableHashSet<TicketId>)(tickets ?? []);
+    private ImmutableHashSet<TicketId> tickets = tickets?.ToImmutableHashSet() ?? [];
 
-    private ImmutableHashSet<ProjectTag> tags = (ImmutableHashSet<ProjectTag>) (tags ?? []);
+    private ImmutableHashSet<ProjectTag> tags = tags?.ToImmutableHashSet() ?? [];
 
     /// <summary>
     /// Rename project.
