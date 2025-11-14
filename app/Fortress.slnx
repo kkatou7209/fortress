@@ -1,4 +1,15 @@
 <Solution>
-  <Project Path="Core.Tests/Core.Tests.csproj" />
-  <Project Path="Core/Core.csproj" />
+  <Project Path="Application.Tests/Application.Tests.csproj" />
+  <Project Path="Application/Application.csproj" />
+  <Project Path="Common/Common.csproj" />
+  <Project Path="Domain.Archive.Tests/Domain.Archive.Tests.csproj" />
+  <Project Path="Domain.Archive/Domain.Archive.csproj" />
+  <Project Path="Domain.Roster.Tests/Domain.Roster.Tests.csproj" />
+  <Project Path="Domain.Roster/Domain.Roster.csproj" />
+  <Project Path="Domain.Vault.Tests/Domain.Vault.Tests.csproj" />
+  <Project Path="Domain.Vault/Domain.Vault.csproj" />
+  <Project Path="Domain.Workshop.Tests/Domain.Workshop.Tests.csproj" />
+  <Project Path="Domain.Workshop/Domain.Workshop.csproj" />
+  <Project Path="Web.Api.Tests/Web.Api.Tests.csproj" />
+  <Project Path="Web.Api/Web.Api.csproj" />
 </Solution>

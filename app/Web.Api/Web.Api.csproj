@@ -1,16 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Domains/Roster/" />
-    <Folder Include="Domains/Archive/" />
-    <Folder Include="Domains/Studio/" />
-    <Folder Include="Domains/Vault/" />
-  </ItemGroup>
 
 </Project>

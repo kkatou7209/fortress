@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Core Test",
+            "label": "Core: Unit Test",
             "type": "shell",
-            "command": "dotnet test --logger \"console;verbosity=detailed\"",
+            "command": "${workspaceFolder}/scripts/core-unit-test.sh",
             "group": "test"
         }
     ]

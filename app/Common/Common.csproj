@@ -6,11 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Domains/Roster/" />
-    <Folder Include="Domains/Archive/" />
-    <Folder Include="Domains/Studio/" />
-    <Folder Include="Domains/Vault/" />
-  </ItemGroup>
-
 </Project>
