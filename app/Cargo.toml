@@ -1,0 +1,10 @@
+[workspace]
+resolver = "3"
+members = [
+    "roster",
+    "workshop",
+    "vault",
+    "archive",
+    "web",
+    "application",
+]

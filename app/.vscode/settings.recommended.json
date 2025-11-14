@@ -1,0 +1,12 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "archive/Cargo.toml",
+        "roster/Cargo.toml",
+        "vault/Cargo.toml",
+        "workshop/Cargo.toml",
+        "application/Cargo.toml",
+        "web/Cargo.toml"
+    ],
+    "rust-analyzer.workspace.symbol.search.scope": "workspace",
+    "rust-analyzer.cargo.autoreload": true
+}
