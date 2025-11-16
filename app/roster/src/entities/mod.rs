@@ -1,6 +1,6 @@
-mod entities;
+mod user;
 
-pub use entities::{
+pub use user::{
     User,
     UserId,
     UserName,

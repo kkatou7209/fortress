@@ -8,5 +8,6 @@
         "web/Cargo.toml"
     ],
     "rust-analyzer.workspace.symbol.search.scope": "workspace",
-    "rust-analyzer.cargo.autoreload": true
+    "rust-analyzer.cargo.autoreload": true,
+    "rust-analyzer.imports.granularity.group": "module"
 }
