@@ -1,7 +1,0 @@
-mod entities;
-
-pub use entities::{
-    User,
-    UserId,
-    UserName,
-};

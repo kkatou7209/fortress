@@ -12,12 +12,12 @@ use crate::MemberId;
 pub struct Ticket {
     id:       TicketId,
     title:    TicketTitle,
+    memo:     Option<TicketMemo>,
     priority: Option<TicketPriority>,
     state:    Option<TicketState>,
     deadline: Option<TicketDeadline>,
     comments: Vec<TicketComment>,
     assignee: Option<MemberId>,
-    schedule: Option<TicketSchedule>,
 }
 
 impl Ticket {
@@ -26,12 +26,12 @@ impl Ticket {
         Self {
             id,
             title,
+            memo: None,
             priority: None,
             state: None,
             deadline: None,
             comments: Vec::new(),
             assignee: None,
-            schedule: None,
         }
     }
 
@@ -39,22 +39,22 @@ impl Ticket {
     pub fn restore(
         id:       TicketId,
         title:    TicketTitle,
+        memo:     Option<TicketMemo>,
         priority: Option<TicketPriority>,
         state:    Option<TicketState>,
         deadline: Option<TicketDeadline>,
         comments: impl IntoIterator<Item = TicketComment>,
         assignee: Option<MemberId>,
-        schedule: Option<TicketSchedule>,
     ) -> Self {
         Self {
             id,
             title,
+            memo,
             priority,
             state,
             deadline,
             comments: Vec::from_iter(comments),
             assignee,
-            schedule,
         }
     }
     
@@ -66,6 +66,11 @@ impl Ticket {
     /// Get title of the ticket.
     pub fn title(&self) -> &TicketTitle {
         &self.title
+    }
+
+    /// Get memo of the ticket.
+    pub fn memo(&self) -> Option<&TicketMemo> {
+        self.memo.as_ref()
     }
 
     /// Get deadline of the ticket.
@@ -82,12 +87,7 @@ impl Ticket {
     pub fn assignee(&self) -> Option<&MemberId> {
         self.assignee.as_ref()
     }
-
-    /// Get schedule of the ticket.
-    pub fn schedule(&self) -> Option<&TicketSchedule> {
-        self.schedule.as_ref()
-    }
-
+ 
     /// Retitle ticket.
     pub fn retitle(&mut self, title: TicketTitle) {
         self.title = title;
@@ -164,33 +164,44 @@ impl TicketTitle {
     }
 }
 
+/// A memo for tciket.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TicketMemo(String);
+
+impl TicketMemo {
+
+    /// Create memo for ticket.    
+    pub fn of(value: impl Into<String>) -> Result<Self> {
+        
+        let value = value.into().trim().to_string();
+
+        if value.is_empty() {
+            return Err(anyhow!("A ticket memo cannot be empty"));
+        }
+
+        Ok(Self(value))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
 /// Priority of tickets.
 /// 
 /// A priority becomes heigher in proportion to its order.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TicketPriority {
-    title: String,
-    order: u32,
-}
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct TicketPriority(i32);
 
 impl TicketPriority {
     
     /// Define new priority category.
-    pub fn of(title: impl Into<String>, order: impl Into<u32>) -> Self {
-        Self {
-            title: title.into(),
-            order: order.into()
-        }
+    pub fn of(value: i32) -> Self {
+        Self(value)
     }
 
-    /// Get title of the priority.
-    pub fn title(&self) -> &str {
-        &self.title
-    }
-
-    /// Priority order.
-    pub fn order(&self) -> &u32 {
-        &self.order
+    pub fn as_i32(&self) -> &i32 {
+        &self.0
     }
 }
 
@@ -269,34 +280,5 @@ impl TicketComment {
 
     pub fn commented_at(&self) -> &u64 {
         &self.commented_at
-    }
-}
-
-/// Schedule of ticket.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TicketSchedule {
-    start: u64,
-    end: u64,
-}
-
-impl TicketSchedule {
-    
-    pub fn of(start: u64, end: u64) -> Result<Self> {
-        if start > end {
-            return Err(anyhow!("End time must be after the start time."));
-        }
-        Ok(Self { start, end })
-    }
-
-    pub fn start(&self) -> &u64 {
-        &self.start
-    }
-
-    pub fn end(&self) -> &u64 {
-        &self.end
-    }
-
-    pub fn span(&self) -> u64 {
-        self.end - self.start
     }
 }

@@ -1,8 +1,5 @@
 {
     "rust-analyzer.linkedProjects": [
-        "archive/Cargo.toml",
-        "roster/Cargo.toml",
-        "vault/Cargo.toml",
         "workshop/Cargo.toml",
         "application/Cargo.toml",
         "web/Cargo.toml"

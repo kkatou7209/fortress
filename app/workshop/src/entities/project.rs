@@ -1,14 +1,11 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashSet};
 
 use anyhow::{Ok, Result, anyhow};
 
 use crate::{
     Member,
     MemberId,
-    ProjectFactory,
-    Ticket,
-    TicketId,
-    TicketTitle,
+    Ticket, TicketId,
 };
 
 /// Entity of project.
@@ -22,16 +19,11 @@ pub struct Project {
     id:        ProjectId,
     name:      ProjectName,
     members:   HashSet<MemberId>,
-    tickets:   HashMap<TicketId, Ticket>,
-    schedule:  Option<ProjectSchedule>,
+    tickets:   HashSet<Ticket>,
+    span:  Option<ProjectSpan>,
 }
 
 impl Project {
-
-    /// Create new project.
-    pub fn factory() -> ProjectFactory {
-        ProjectFactory::new()
-    }
 
     /// Restore existing project.
     pub fn restore(
@@ -39,14 +31,14 @@ impl Project {
         name:    ProjectName,
         members: impl IntoIterator<Item = MemberId>,
         tickets: impl IntoIterator<Item = Ticket>,
-        schedule: Option<ProjectSchedule>,
+        span: Option<ProjectSpan>,
     ) -> Self {
         Self {
             id,
             name,
             members: HashSet::from_iter(members),
-            tickets: HashMap::from_iter(tickets.into_iter().map(|t| (t.id().clone(), t))),
-            schedule,
+            tickets: HashSet::from_iter(tickets),
+            span,
         }
     }
 
@@ -73,12 +65,16 @@ impl Project {
 
     /// Get tickets of the project.
     pub fn tickets(&self) -> Vec<&Ticket> {
-        self.tickets.iter().map(|t| t.1).collect()
+        self.tickets.iter().collect()
+    }
+
+    pub fn ticket_of(&self, id: &TicketId) -> Option<&Ticket> {
+        self.tickets.iter().find(|t| t.id() == id)
     }
 
     /// Get schedule of the project.
-    pub fn schedule(&self) -> Option<&ProjectSchedule> {
-        self.schedule.as_ref()
+    pub fn span(&self) -> Option<&ProjectSpan> {
+        self.span.as_ref()
     }
 
     /// Assign new member.
@@ -91,73 +87,27 @@ impl Project {
         self.members.remove(member.id());
     }
 
-    /// Add a new ticket to the project.
-    pub fn new_ticket(&mut self, title: TicketTitle, mutation: impl Fn(&mut Ticket) -> ()) -> Result<()>{
-        
-        let id = TicketId::of((self.tickets.len() + 1) as u64);
-        let ticket = Ticket::new(id.clone(), title);
-        self.tickets.insert(id.clone(), ticket);
-        
-        let ticket = self.tickets.get_mut(&id).unwrap();
-        mutation(ticket);
-        
-        if self.schedule.is_none() { return Ok(()); }
-        if ticket.schedule().is_none() { return Ok(()); }
-
-        let schedule = self.schedule.as_ref().unwrap();
-        let ticket_schedule = ticket.schedule().unwrap();
-
-        if schedule.end() < ticket_schedule.end() {
-            return Err(anyhow!("The ticket schedule ends before the project schedule."));
-        }
-
-        if schedule.start() > ticket_schedule.start() {
-            return Err(anyhow!("The ticket schedule starts after the project schedule."));
-        }
-
-        Ok(())
-    }
-
-    /// Get a ticket to modify.
-    pub fn modify_ticket(&mut self, ticket: &TicketId, mutation: impl Fn(&mut Ticket) -> ()) -> Result<()> {
-
-        let ticket = self.tickets.get_mut(ticket).expect("Ticket was not found in this project.");
-
-        mutation(ticket);
-
-        if self.schedule.is_none() { return Ok(()); }
-        if ticket.schedule().is_none() { return Ok(()); }
-
-        let schedule = self.schedule.as_ref().unwrap();
-        let ticket_schedule = ticket.schedule().unwrap();
-
-        if schedule.end() < ticket_schedule.end() {
-            return Err(anyhow!("The ticket schedule ends before the project schedule."));
-        }
-
-        if schedule.start() > ticket_schedule.start() {
-            return Err(anyhow!("The ticket schedule starts after the project schedule."));
-        }
-
-        Ok(())
-    }
-
     /// Assign member to ticket.
     pub fn assign_ticket(&mut self, member: &Member, ticket: &Ticket) -> Result<()> {
-        let target = self.tickets.get_mut(ticket.id())
+        
+        let mut target = self.tickets.take(ticket)
             .expect("This ticket does not belong to this project.");
+
         target.assign(member.id().clone());
+
+        self.tickets.insert(target);
+        
         Ok(())
     }
 
     /// Delete ticket.
     pub fn delete_ticket(&mut self, ticket: &Ticket) {
-        self.tickets.remove(ticket.id());
+        self.tickets.remove(ticket);
     }
 
     /// Set schedule of the project.
-    pub fn make_schedule(&mut self, schedule: ProjectSchedule) {
-        self.schedule = Some(schedule);
+    pub fn make_schedule(&mut self, schedule: ProjectSpan) {
+        self.span = Some(schedule);
     }
 }
 
@@ -194,6 +144,7 @@ impl Into<ProjectId> for &ProjectId {
     }
 }
 
+/// Name of a project
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ProjectName(String);
 
@@ -218,12 +169,12 @@ impl ProjectName {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ProjectSchedule {
+pub struct ProjectSpan {
     start: u64,
     end: u64,
 }
 
-impl ProjectSchedule {
+impl ProjectSpan {
     
     pub fn of(start: u64, end: u64) -> Result<Self> {
         if start > end {
